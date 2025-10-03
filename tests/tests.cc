@@ -83,13 +83,7 @@ TEST_CASE("Check Accounts Map", "[map1]") {
 TEST_CASE("Duplicate Accounts", "[dup1]") {
   Atm atm;
   atm.RegisterAccount(17171981, 9087, "Billy Joe", 8900);
-  size_t b4 = atm.GetAccounts().size();
-  try {
-    atm.RegisterAccount(17171981, 9087, "Johnny P", 8900);
-  } catch (std::invalid_argument& e) {
-    // Nothing
-  }
-  REQUIRE(b4 == atm.GetAccounts().size());
+  REQUIRE_THROWS(atm.RegisterAccount(17171981, 9087, "Johnny P", 8900));
 }
 TEST_CASE("Infinite Money", "[inf1]") {
   Atm atm;
