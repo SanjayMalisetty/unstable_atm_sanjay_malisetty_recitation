@@ -149,3 +149,7 @@ TEST_CASE("Valid Ledger", "[ledger]") {
   REQUIRE(accts.find({11112222, 3333}) != accts.end());
   atm.PrintLedger("ledger_output.txt", 11112222, 3333);
 }
+TEST_CASE("Nonexistent Ledger", "[led throw]") {
+  Atm atm;
+  REQUIRE_THROWS(atm.PrintLedger("fake_ledger", 99999999, 1234));
+}
