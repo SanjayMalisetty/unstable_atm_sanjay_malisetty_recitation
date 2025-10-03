@@ -74,3 +74,77 @@ TEST_CASE("Example: Print Prompt Ledger", "[ex-3]") {
   atm.PrintLedger("./prompt.txt", 12345678, 1234);
   REQUIRE(CompareFiles("./ex-1.txt", "./prompt.txt"));
 }
+TEST_CASE("Check Accounts Map", "[map1]") {
+  Atm atm;
+  atm.RegisterAccount(11112222, 9876, "Hacker Smith", 3000);
+  auto& accts = atm.GetAccounts();
+  REQUIRE(accts.find({11112222, 9876}) != accts.end());
+}
+TEST_CASE("Duplicate Accounts", "[dup1]") {
+  Atm atm;
+  atm.RegisterAccount(17171981, 9087, "Billy Joe", 8900);
+  size_t b4 = atm.GetAccounts().size();
+  try {
+    atm.RegisterAccount(17171981, 9087, "Billy Joe", 8900);
+  } catch (std::invalid_argument& e) {
+    // Nothing
+  }
+  REQUIRE(b4 == atm.GetAccounts().size());
+}
+TEST_CASE("Infinite Money", "[inf1]") {
+  Atm atm;
+  atm.RegisterAccount(6785689456, 4563, "Idk atp", 7890);
+  atm.WithdrawCash(6785689456, 4563, 500);
+  REQUIRE(atm.CheckBalance(6785689456, 4563) == 7390);
+}
+TEST_CASE("Negative Balance Check", "[neg1]") {
+  Atm atm;
+  atm.RegisterAccount(5678345, 8734, "Lmfao what", 1000);
+  try {
+    atm.WithdrawCash(5678345, 8734, 1500);
+  } catch (std::runtime_error& e) {
+    // Nothing
+  }
+  REQUIRE(atm.CheckBalance(5678345, 8734) == 1000);
+}
+TEST_CASE("Negative Removal", "[neg2]") {
+  Atm atm;
+  atm.RegisterAccount(87654432, 8967, "Billy Joe", 8900);
+  try {
+    atm.WithdrawCash(87654432, 8967, -1500);
+  } catch (std::invalid_argument& e) {
+    // Nothing
+  }
+  REQUIRE(atm.CheckBalance(87654432, 8967) == 8900);
+}
+TEST_CASE("Register Negative Balance", "[regneg1]") {
+  Atm atm;
+  atm.RegisterAccount(9479370632, 8345, "Negative nancy", -1900);
+  auto& accts = atm.GetAccounts();
+  REQUIRE(accts.find({9479370632, 8345}) != accts.end());
+  REQUIRE(accts[{9479370632, 8345}].balance == -1900);
+  REQUIRE(accts[{9479370632, 8345}].owner_name == "Negative nancy");
+}
+TEST_CASE("Deposit updated balance", "[dep1]") {
+  Atm atm;
+  atm.RegisterAccount(234567986, 3456, "Running Man", 9000);
+  atm.DepositCash(234567986, 3456, 6000);
+  REQUIRE(atm.CheckBalance(234567986, 3456) == 15000);
+}
+TEST_CASE("Negative Deposit", "[negativedep1]") {
+  Atm atm;
+  atm.RegisterAccount(70707070, 1212, "Gracey", 400);
+  try {
+    atm.DepositCash(70707070, 1212, -10.0);
+  } catch (std::exception& e) {
+    // Nothing!!
+  }
+  REQUIRE(atm.CheckBalance(70707070, 1212) == 400);
+}
+TEST_CASE("Ledger", "[led]") {
+  Atm atm;
+  atm.RegisterAccount(20221010, 1010, "Henry", 200.0);
+  atm.DepositCash(20221010, 1010, 100.0);
+  atm.WithdrawCash(20221010, 1010, 50.0);
+  atm.PrintLedger("ledger_test.txt", 20221010, 1010);
+}
