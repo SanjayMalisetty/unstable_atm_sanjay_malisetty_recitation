@@ -85,7 +85,7 @@ TEST_CASE("Duplicate Accounts", "[dup1]") {
   atm.RegisterAccount(17171981, 9087, "Billy Joe", 8900);
   size_t b4 = atm.GetAccounts().size();
   try {
-    atm.RegisterAccount(17171981, 9087, "Billy Joe", 8900);
+    atm.RegisterAccount(17171981, 9087, "Johnny P", 8900);
   } catch (std::invalid_argument& e) {
     // Nothing
   }
