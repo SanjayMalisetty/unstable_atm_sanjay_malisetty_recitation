@@ -148,3 +148,10 @@ TEST_CASE("Ledger", "[led]") {
   atm.WithdrawCash(20221010, 1010, 50.0);
   atm.PrintLedger("ledger_test.txt", 20221010, 1010);
 }
+TEST_CASE("Valid Ledger", "[ledger]") {
+  Atm atm;
+  atm.RegisterAccount(11112222, 3333, "Ledger Owner", 500.0);
+  auto& accts = atm.GetAccounts();
+  REQUIRE(accts.find({11112222, 3333}) != accts.end());
+  atm.PrintLedger("ledger_output.txt", 11112222, 3333);
+}
